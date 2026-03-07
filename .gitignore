@@ -1,0 +1,7 @@
+test_runner
+*.o
+Debug/
+Release/
+.settings/
+.metadata/
+.mxproject
