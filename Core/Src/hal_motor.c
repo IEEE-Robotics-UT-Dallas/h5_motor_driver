@@ -95,6 +95,7 @@ float hal_motor_get_current(motor_id_t motor) {
 #endif
 }
 
+#ifdef UNIT_TEST
 /* Test Interface */
 void _hal_motor_mock_set_current(motor_id_t motor, float current) {
     if (motor < MOTOR_COUNT) {
@@ -102,4 +103,9 @@ void _hal_motor_mock_set_current(motor_id_t motor, float current) {
     }
 }
 
-void _hal_motor_mock_encoder_increment(motor_id_t motor, int32_t amount) { encoder_counts[motor] += amount; }
+void _hal_motor_mock_encoder_increment(motor_id_t motor, int32_t amount) {
+    if (motor < MOTOR_COUNT) {
+        encoder_counts[motor] += amount;
+    }
+}
+#endif

@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/groovy-byte/STM32CubeIDE/h5_robot_workspace/h5_motor_driver/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

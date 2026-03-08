@@ -3,6 +3,7 @@
 #include "kinematics.h"
 #include "hal_imu.h"
 #include "stl_service.h"
+#include "eeprom_service.h"
 #include <stdbool.h>
 
 extern float mock_pwm_outputs[MOTOR_COUNT];
@@ -12,11 +13,13 @@ extern void _hal_motor_mock_encoder_increment(motor_id_t motor, int32_t amount);
 extern void _hal_motor_mock_set_current(motor_id_t motor, float current);
 extern void _stl_mock_inject_failure(stl_status_t type);
 extern void _stl_mock_reset(void);
+extern void _eeprom_mock_clear(void);
 
 void setUp(void) {
     hal_motor_init();
     hal_imu_init();
     _stl_mock_reset();
+    _eeprom_mock_clear();
     for(int i=0; i<MOTOR_COUNT; i++) {
         mock_pwm_outputs[i] = 0.0f;
         mock_phase_pins[i] = 0;
@@ -31,9 +34,8 @@ void tearDown(void) {}
 /* Kinematics */
 
 void test_kinematics_straight_forward(void) {
-    // Requesting 0.5 m/s
-    // Physics: 333 RPM @ 65mm radius = 2.26 m/s max.
-    // Expected Duty Cycle: 0.5 / 2.26 = ~0.221
+    // Physics: 333 RPM @ 65mm radius = 2.26 m/s max velocity
+    // Requesting 0.5 m/s -> Expected Duty Cycle = 0.5 / 2.26 = ~0.221
     motor_speeds_t speeds = kinematics_inverse(0.5f, 0.0f, 0.0f);
     TEST_ASSERT_FLOAT_WITHIN(0.01f, 0.221f, speeds.fl);
     TEST_ASSERT_FLOAT_WITHIN(0.01f, 0.221f, speeds.fr);
@@ -79,7 +81,7 @@ void test_overcurrent_safety_cutoff(void) {
     _hal_motor_mock_set_current(MOTOR_FL, 3.2f);
     hal_motor_set_speed(MOTOR_FL, 0.5f);
     
-    // Motor should be forced to 0% PWM
+    // Motor should be forced to 0% PWM due to safety logic
     TEST_ASSERT_EQUAL_FLOAT(0.0f, mock_pwm_outputs[MOTOR_FL]);
 }
 
@@ -98,6 +100,17 @@ void test_memory_integrity_check(void) {
 
     _stl_mock_inject_failure(STL_ERR_RAM);
     TEST_ASSERT_EQUAL_INT(STL_ERR_RAM, stl_verify_ram());
+}
+
+/* EEPROM (X-CUBE-EEPROM) */
+
+void test_eeprom_write_read(void) {
+    uint32_t write_val = 0xDEADBEEF;
+    uint32_t read_val = 0;
+    
+    TEST_ASSERT_EQUAL_INT(EEPROM_OK, eeprom_write(10, write_val));
+    TEST_ASSERT_EQUAL_INT(EEPROM_OK, eeprom_read(10, &read_val));
+    TEST_ASSERT_EQUAL_HEX32(write_val, read_val);
 }
 
 /* Safety */
@@ -126,6 +139,7 @@ int main(void) {
     RUN_TEST(test_overcurrent_safety_cutoff);
     RUN_TEST(test_imu_yaw_reading);
     RUN_TEST(test_memory_integrity_check);
+    RUN_TEST(test_eeprom_write_read);
     RUN_TEST(test_emergency_stop);
     RUN_TEST(test_diagnostic_routine_safe_exit);
     return UNITY_END();

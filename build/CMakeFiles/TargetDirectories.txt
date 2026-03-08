@@ -1,0 +1,3 @@
+/home/groovy-byte/STM32CubeIDE/h5_robot_workspace/h5_motor_driver/build/CMakeFiles/h5_motor_driver.elf.dir
+/home/groovy-byte/STM32CubeIDE/h5_robot_workspace/h5_motor_driver/build/CMakeFiles/edit_cache.dir
+/home/groovy-byte/STM32CubeIDE/h5_robot_workspace/h5_motor_driver/build/CMakeFiles/rebuild_cache.dir
