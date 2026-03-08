@@ -77,8 +77,8 @@ void test_motor_current_polling(void) {
 }
 
 void test_overcurrent_safety_cutoff(void) {
-    // Simulate stall current (3.2A)
-    _hal_motor_mock_set_current(MOTOR_FL, 3.2f);
+    // Simulate current just over the 2.5A limit
+    _hal_motor_mock_set_current(MOTOR_FL, 2.6f);
     hal_motor_set_speed(MOTOR_FL, 0.5f);
     
     // Motor should be forced to 0% PWM due to safety logic

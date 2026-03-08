@@ -78,6 +78,6 @@
 #define ENCODER_TPR       (ENCODER_LINES * 4 * MOTOR_GEAR_RATIO) // 1320 ticks/rev
 
 #define PWM_PERIOD 1000
-#define CURRENT_LIMIT_AMPS 3.0f    // Safety margin below 3.2A stall
+#define CURRENT_LIMIT_AMPS 2.5f    // Safer margin (Stall is 3.2A)
 
 #endif /* BOARD_CONFIG_H */
