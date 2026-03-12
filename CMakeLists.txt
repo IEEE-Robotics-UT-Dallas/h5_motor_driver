@@ -29,6 +29,7 @@ set(SOURCES
     Core/Src/hal_imu_mpu6050.c
     Core/Src/stl_service.c
     Core/Src/eeprom_service.c
+    Core/Src/hal_usb.c
     Src/main.c
     Src/stm32h5xx_it.c
     Src/stm32h5xx_hal_msp.c

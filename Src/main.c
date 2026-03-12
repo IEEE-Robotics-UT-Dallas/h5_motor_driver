@@ -21,7 +21,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "hal_usb.h"
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -85,13 +86,21 @@ int main(void)
 
   /* Initialize all configured peripherals */
   /* USER CODE BEGIN 2 */
-
+  hal_usb_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  uint8_t usb_rx_buf[64];
+  uint16_t rx_len;
+
   while (1)
   {
+    /* Simple USB Loopback */
+    rx_len = sizeof(usb_rx_buf);
+    if (hal_usb_receive(usb_rx_buf, &rx_len) == USB_OK && rx_len > 0) {
+        hal_usb_transmit(usb_rx_buf, rx_len);
+    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
