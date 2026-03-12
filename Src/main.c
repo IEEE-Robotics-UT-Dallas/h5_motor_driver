@@ -23,6 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include "hal_usb.h"
 #include <string.h>
+#include "cmd_parser.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -87,6 +88,7 @@ int main(void)
   /* Initialize all configured peripherals */
   /* USER CODE BEGIN 2 */
   hal_usb_init();
+  cmd_parser_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -96,10 +98,12 @@ int main(void)
 
   while (1)
   {
-    /* Simple USB Loopback */
+    /* USB Command Processing */
     rx_len = sizeof(usb_rx_buf);
     if (hal_usb_receive(usb_rx_buf, &rx_len) == USB_OK && rx_len > 0) {
-        hal_usb_transmit(usb_rx_buf, rx_len);
+        for (uint16_t i = 0; i < rx_len; i++) {
+            cmd_parser_process_char(usb_rx_buf[i]);
+        }
     }
     /* USER CODE END WHILE */
 

@@ -80,12 +80,8 @@ __attribute__((weak)) int _read(int file, char *ptr, int len)
 __attribute__((weak)) int _write(int file, char *ptr, int len)
 {
   (void)file;
-  int DataIdx;
-
-  for (DataIdx = 0; DataIdx < len; DataIdx++)
-  {
-    __io_putchar(*ptr++);
-  }
+  extern int hal_usb_transmit(const uint8_t *data, uint16_t len);
+  hal_usb_transmit((const uint8_t *)ptr, (uint16_t)len);
   return len;
 }
 
